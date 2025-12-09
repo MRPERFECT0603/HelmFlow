@@ -5,7 +5,7 @@ metadata:
   labels:
     app: nginx
 spec:
-  replicas: {{ .Values.nginx.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
       app: nginx
@@ -19,4 +19,11 @@ spec:
         image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
         ports:
         - containerPort: 80
-
+        volumeMounts:
+        - name: nginx-config-volume
+          mountPath: /etc/openresty/nginx.conf
+          subPath: nginx.conf
+      volumes:
+      - name: nginx-config-volume
+        configMap:
+          name: nginx-config

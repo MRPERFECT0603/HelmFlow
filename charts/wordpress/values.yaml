@@ -1,4 +1,5 @@
 wordpress:
+  replicaCount: 1
   image:
     repository: vivekshaurya/wordpress
     tag: latest
@@ -9,6 +10,7 @@ mysql:
     tag: latest
 
 nginx:
+  replicaCount: 1
   image:
     repository: vivekshaurya/nginx-openresty
     tag: latest
