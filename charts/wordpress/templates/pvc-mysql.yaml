@@ -1,10 +1,14 @@
+{{- if .Values.mysql.persistence.enabled }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: mysql-pvc
+  name: {{ include "wordpress.fullname" . }}-mysql-pvc
+  labels:
+    {{- include "wordpress.labels" . | nindent 4 }}
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 10Gi
+      storage: {{ .Values.mysql.persistence.size }}
+{{- end }}

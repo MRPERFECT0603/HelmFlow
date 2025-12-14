@@ -1,37 +1,44 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql
+  name: {{ include "wordpress.fullname" . }}-mysql
   labels:
-    app: mysql
+    {{- include "wordpress.labels" . | nindent 4 }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.mysql.replicaCount }}
   selector:
     matchLabels:
-      app: mysql
+      app.kubernetes.io/component: mysql
+      app.kubernetes.io/instance: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
-        app: mysql
+        app.kubernetes.io/component: mysql
+        {{- include "wordpress.labels" . | nindent 8 }}
     spec:
       containers:
-      - name: mysql
-        image: "{{ .Values.mysql.image.repository }}:{{ .Values.mysql.image.tag }}"
-        env:
-        - name: MYSQL_DATABASE
-          value: wordpress
-        - name: MYSQL_USER
-          value: wp_user
-        - name: MYSQL_PASSWORD
-          value: wp_pass
-        - name: MYSQL_ROOT_PASSWORD
-          value: root_pass
-        ports:
-        - containerPort: 3306
-        volumeMounts:
-        - name: mysql-data
-          mountPath: /var/lib/mysql
+        - name: mysql
+          image: "{{ .Values.mysql.image.repository }}:{{ .Values.mysql.image.tag }}"
+          imagePullPolicy: {{ .Values.mysql.image.pullPolicy }}
+          env:
+            - name: MYSQL_DATABASE
+              value: {{ .Values.mysql.auth.database }}
+            - name: MYSQL_USER
+              value: {{ .Values.mysql.auth.user }}
+            - name: MYSQL_PASSWORD
+              value: {{ .Values.mysql.auth.password }}
+            - name: MYSQL_ROOT_PASSWORD
+              value: {{ .Values.mysql.auth.rootPassword }}
+          ports:
+            - containerPort: 3306
+          {{- if .Values.mysql.persistence.enabled }}
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
+          {{- end }}
+      {{- if .Values.mysql.persistence.enabled }}
       volumes:
-      - name: mysql-data
-        persistentVolumeClaim:
-          claimName: mysql-pvc
+        - name: mysql-data
+          persistentVolumeClaim:
+            claimName: {{ include "wordpress.fullname" . }}-mysql-pvc
+      {{- end }}

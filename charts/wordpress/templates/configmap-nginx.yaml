@@ -1,7 +1,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: nginx-config
+  name: {{ include "wordpress.fullname" . }}-nginx-config
+  labels:
+    {{- include "wordpress.labels" . | nindent 4 }}
 data:
   nginx.conf: |
     worker_processes 1;
@@ -20,7 +22,7 @@ data:
         }
 
         location ~ \.php$ {
-          fastcgi_pass wordpress-service.default.svc.cluster.local:9000;
+          fastcgi_pass {{ include "wordpress.fullname" . }}-wordpress:9000;
           fastcgi_index index.php;
           include fastcgi_params;
           fastcgi_param SCRIPT_FILENAME /var/www/html$fastcgi_script_name;

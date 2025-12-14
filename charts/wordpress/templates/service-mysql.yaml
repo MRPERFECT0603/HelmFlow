@@ -1,11 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: mysql
+  name: {{ include "wordpress.fullname" . }}-mysql
+  labels:
+    {{- include "wordpress.labels" . | nindent 4 }}
 spec:
-  selector:
-    app: mysql
+  type: ClusterIP
   ports:
-  - port: 3306
-    targetPort: 3306
-
+    - port: 3306
+      targetPort: 3306
+      protocol: TCP
+      name: mysql
+  selector:
+    app.kubernetes.io/component: mysql
+    app.kubernetes.io/instance: {{ .Release.Name }}

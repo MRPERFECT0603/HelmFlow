@@ -3,12 +3,29 @@ wordpress:
   image:
     repository: vivekshaurya/wordpress
     tag: latest
+    pullPolicy: IfNotPresent
+
+  persistence:
+    enabled: true
+    size: 5Gi
 
 mysql:
+  replicaCount: 1
   image:
     repository: vivekshaurya/mysql
     tag: latest
-    
+    pullPolicy: IfNotPresent
+
+  auth:
+    database: wordpress
+    user: wp_user
+    password: wp_pass
+    rootPassword: root_pass
+
+  persistence:
+    enabled: true
+    size: 10Gi
+
 nginx:
   replicaCount: 1
   image:
