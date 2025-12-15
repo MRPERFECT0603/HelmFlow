@@ -1,0 +1,5 @@
+# TLS / Secrets
+*.crt
+*.key
+wordpress.crt
+wordpress.key
