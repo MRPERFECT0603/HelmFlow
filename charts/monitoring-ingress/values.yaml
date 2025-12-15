@@ -1,0 +1,21 @@
+ingress:
+  enabled: true
+  className: nginx
+
+  tls:
+    enabled: true
+    secretName: wordpress-tls
+    hosts:
+      - grafana.localhost
+      - prometheus.localhost
+
+  grafana:
+    host: grafana.localhost
+    serviceName: monitoring-grafana
+    servicePort: 80
+
+  prometheus:
+    host: prometheus.localhost
+    serviceName: monitoring-kube-prometheus-prometheus
+    servicePort: 9090
+

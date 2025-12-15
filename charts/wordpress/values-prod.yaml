@@ -11,3 +11,7 @@ mysql:
 
 nginx:
   replicaCount: 2
+
+ingress:
+  enabled: true
+  host: wordpress.localhost
