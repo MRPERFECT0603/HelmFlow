@@ -20,6 +20,15 @@ spec:
         - name: wordpress
           image: "{{ .Values.wordpress.image.repository }}:{{ .Values.wordpress.image.tag }}"
           imagePullPolicy: {{ .Values.wordpress.image.pullPolicy }}
+
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+
           env:
             - name: WORDPRESS_DB_HOST
               value: {{ include "wordpress.fullname" . }}-mysql
@@ -29,13 +38,16 @@ spec:
               value: {{ .Values.mysql.auth.password }}
             - name: WORDPRESS_DB_NAME
               value: {{ .Values.mysql.auth.database }}
+
           ports:
             - containerPort: 9000
+
           {{- if .Values.wordpress.persistence.enabled }}
           volumeMounts:
             - name: wp-data
               mountPath: /var/www/html/wp-content
           {{- end }}
+
       {{- if .Values.wordpress.persistence.enabled }}
       volumes:
         - name: wp-data

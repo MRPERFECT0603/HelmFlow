@@ -36,3 +36,10 @@ nginx:
 ingress:
   enabled: false
   host: wordpress.localhost
+
+hpa:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 60
+  targetMemoryUtilizationPercentage: 70
